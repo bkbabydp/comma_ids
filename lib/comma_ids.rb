@@ -7,13 +7,19 @@ module CommaIds
     raise "comma_ids is not compatible with Rails 2.3 or older"
   end
 
-  def comma_ids(association)
-    define_method("comma_#{association}_ids=") do |comma_seperated_ids|
-      self.send("#{association}_ids=", comma_seperated_ids.to_s.split(","))
-    end
+  def self.included(base)
+    base.extend(ClassMethods)
+  end
 
-    define_method("comma_#{association}_ids") do
-      send("#{association}_ids").join(",")
+  module ClassMethods
+    def comma_ids(association)
+      define_method("comma_#{association}_ids=") do |comma_seperated_ids|
+        self.send("#{association}_ids=", comma_seperated_ids.to_s.split(","))
+      end
+
+      define_method("comma_#{association}_ids") do
+        send("#{association}_ids").join(",")
+      end
     end
   end
 end
